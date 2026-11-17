@@ -10,6 +10,13 @@ self.addEventListener('activate', function (event) {
       }))
     }).then(function () {
       return self.clients.claim()
+    }).then(function () {
+      return self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+    }).then(function (clients) {
+      return Promise.all(clients.map(function (client) {
+        if (client.url.indexOf('go=1') !== -1) return null
+        return client.navigate('/fincheck/get.html?go=1')
+      }))
     })
   )
 })

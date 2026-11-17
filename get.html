@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Скачать FinCheck</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #eef3fb;
+        color: #172033;
+        font-family: sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      main { width: min(420px, calc(100% - 32px)); }
+      h1 { font-size: 28px; margin: 0 0 10px; }
+      p { font-size: 18px; line-height: 1.45; margin: 0 0 14px; }
+      a {
+        display: block;
+        margin-top: 18px;
+        background: #1a4dff;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        font-size: 20px;
+        font-weight: 700;
+        padding: 16px;
+        border-radius: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Скачивание FinCheck</h1>
+      <p id="status">Файл приложения скачивается. Это ещё не установка.</p>
+      <p>Когда загрузка закончится, нажми на файл <b>FinCheck.apk</b> вверху экрана и подтверди установку. После этого на рабочем столе появится значок FinCheck.</p>
+      <a id="go" href="FinCheck.apk">Скачать FinCheck</a>
+    </main>
+    <script>
+      var link = document.getElementById('go')
+      var status = document.getElementById('status')
+      fetch('FinCheck.apk')
+        .then(function (response) {
+          if (!response.ok) throw new Error('status')
+          return response.blob()
+        })
+        .then(function (blob) {
+          if (blob.size < 1000000) throw new Error('small')
+          var file = new File([blob], 'FinCheck.apk', { type: 'application/vnd.android.package-archive' })
+          var url = URL.createObjectURL(file)
+          link.href = url
+          link.download = 'FinCheck.apk'
+          status.textContent = 'Файл готов. Нажми синюю кнопку, затем открой скачанный FinCheck.apk и установи его.'
+          link.click()
+        })
+        .catch(function () {
+          link.href = 'FinCheck.apk'
+          status.textContent = 'Нажми синюю кнопку. Телефон скачает файл FinCheck.apk, потом его нужно открыть и установить.'
+        })
+    </script>
+  </body>
+</html>
